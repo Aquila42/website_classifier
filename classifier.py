@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from nltk.corpus import nps_chat
 from nltk.classify.naivebayes import NaiveBayesClassifier as learner
 from bs4 import BeautifulSoup
+import math
 
 english = enchant.Dict("en_US")
 SUBJECT_CHARS = 50
@@ -35,7 +36,7 @@ class CategoryClassifier:
 
     def build_data_set(self,label):
         #print "Train classifier with label 'arts' in build_data_set"
-        urls = "subset/"+label+"_urls"
+        urls = "../subset/"+label+"_urls"
         #print "Open arts_urls - this is what has to be classified"
         f = open(urls,'r')
         #Got the URLs from file
@@ -127,88 +128,93 @@ class CategoryClassifier:
         counts["sports"] = 0
         counts["technology"] = 0
         counts["travel"] = 0
+        N = 27 #Number of features
         for word in words:
             word.lower()
-            if word in self.agriculture.keys():
-                counts["agriculture"] += 1/float(self.agriculture[word])
+            if word in self.idf:
+                idf = math.log(N/self.idf[word])
+            else:
+                continue
+            if word in self.agriculture:
+                counts["agriculture"] += idf
                 print "agriculture ",word
-            if word in self.animals.keys():
-                counts["animals"] += 1/float(self.animals[word])
+            if word in self.animals:
+                counts["animals"] += idf
                 print "animals ",word
-            if word in self.animation.keys():
-                counts["animation"] += 1/float(self.animation[word])
+            if word in self.animation:
+                counts["animation"] += idf
                 print "animation ",word
-            if word in self.architecture.keys():
-                counts["architecture"] += 1/float(self.architecture[word])
+            if word in self.architecture:
+                counts["architecture"] += idf
                 print "architecture ",word
-            if word in self.astronomy.keys():
-                counts["astronomy"] += 1/float(self.astronomy[word])
+            if word in self.astronomy:
+                counts["astronomy"] += idf
                 print "astronomy ",word
-            if word in self.books.keys():
-                counts["books"] += 1/float(self.books[word])
+            if word in self.books:
+                counts["books"] += idf
                 print "books ",word
-            if word in self.chemistry.keys():
-                counts["chemistry"] += 1/float(self.chemistry[word])
+            if word in self.chemistry:
+                counts["chemistry"] += idf
                 print "chemistry ",word
-            if word in self.commerce.keys():
-                counts["commerce"] += 1/float(self.commerce[word])
+            if word in self.commerce:
+                counts["commerce"] += idf
                 print "commerce ",word
-            if word in self.crafts.keys():
-                counts["crafts"] += 1/float(self.crafts[word])
+            if word in self.crafts:
+                counts["crafts"] += idf
                 print "crafts ",word
-            if word in self.current.keys():
-                counts["current"] += 1/float(self.current[word])
+            if word in self.current:
+                counts["current"] += idf
                 print "current ",word
-            if word in self.economy.keys():
-                counts["economy"] += 1/float(self.economy[word])
+            counts["economy"] += idf
+            if word in self.economy:
                 print "economy ",word
-            if word in self.education.keys():
-                counts["education"] += 1/float(self.education[word])
+            if word in self.education:
+                counts["education"] += idf
                 print "education ",word
-            if word in self.films.keys():
-                counts["films"] += 1/float(self.films[word])
+            if word in self.films:
+                counts["films"] += idf
                 print "films ",word
-            if word in self.games.keys():
-                counts["games"] += 1/float(self.games[word])
+            if word in self.games:
+                counts["games"] += idf
                 print "games ",word
-            if word in self.government.keys():
-                counts["government"] += 1/float(self.government[word])
+            if word in self.government:
+                counts["government"] += idf
                 print "government ",word
-            if word in self.history.keys():
-                counts["history"] += 1/float(self.history[word])
+            if word in self.history:
+                counts["history"] += idf
                 print "history ",word
-            if word in self.hobbies.keys():
-                counts["hobbies"] += 1/float(self.hobbies[word])
+            if word in self.hobbies:
+                counts["hobbies"] += idf
                 print "hobbies ",word
-            if word in self.household.keys():
-                counts["household"] += 1/float(self.household[word])
+            if word in self.household:
+                counts["household"] += idf
                 print "household ",word
-            if word in self.manufacturing.keys():
-                counts["manufacturing"] += 1/float(self.manufacturing[word])
+            if word in self.manufacturing:
+                counts["manufacturing"] += idf
                 print "manufacturing ",word
-            if word in self.medical.keys():
-                counts["medical"] += 1/float(self.medical[word])
+            if word in self.medical:
+                counts["medical"] += idf
                 print "medical ",word
-            if word in self.music.keys():
-                counts["music"] += 1/float(self.music[word])
+            if word in self.music:
+                counts["music"] += idf
                 print "music ",word
-            if word in self.reference.keys():
-                counts["reference"] += 1/float(self.reference[word])
+            if word in self.reference:
+                counts["reference"] += idf
                 print "reference ",word
-            if word in self.services.keys():
-                counts["services"] += 1/float(self.services[word])
+            if word in self.services:
+                counts["services"] += idf
                 print "services ",word
-            if word in self.society.keys():
-                counts["society"] += 1/float(self.society[word])
+            if word in self.society:
+                counts["society"] += idf
                 print "society ",word
-            if word in self.sports.keys():
-                counts["sports"] += 1/float(self.sports[word])
+            if word in self.sports:
+                counts["sports"] += idf
                 print "sports ",word
-            if word in self.technology.keys():
-                counts["technology"] += 1/float(self.technology[word])
+            if word in self.technology:
+                counts["technology"] += idf
                 print "technology ",word
-            if word in self.travel.keys():
-                counts["travel"] += 1/float(self.travel[word])
+            if word in self.travel:
+                counts["travel"] += idf
                 print "travel ",word
 
         print "\n\n"
@@ -249,7 +255,7 @@ class CategoryClassifier:
         self.curdir = os.path.dirname(os.path.realpath(__file__))
 
         #print "Defining paths to category files for similarity matching"
-        path = "features/"
+        path = "../features/"
         self.agriculture = self.file_to_dict(path+"agriculture_freq")
         self.animals = self.file_to_dict(path+"animals_freq")
         self.animation = self.file_to_dict(path+"animation_freq")
@@ -277,6 +283,7 @@ class CategoryClassifier:
         self.sports = self.file_to_dict(path+"sports_freq")
         self.technology = self.file_to_dict(path+"technology_freq")
         self.travel = self.file_to_dict(path+"travel_freq")
+        self.idf = self.file_to_dict("../scripts/idf")
 
         print "Calling build_classifier to train classifier"
         self.classifier = self.build_classifier()
